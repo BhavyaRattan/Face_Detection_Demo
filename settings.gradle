@@ -1,0 +1,2 @@
+include ':app', ':deepar'
+rootProject.name='Face_Detection_Demo'
