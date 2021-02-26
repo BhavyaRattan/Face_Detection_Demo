@@ -1,146 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <data>
-
-        <variable
-            name="leftEye"
-            type="String" />
-
-        <variable
-            name="rightEye"
-            type="String" />
-
-        <variable
-            name="mouth"
-            type="String" />
-
-        <variable
-            name="neutral"
-            type="String" />
-
-        <variable
-            name="happiness"
-            type="String" />
-
-        <variable
-            name="surprise"
-            type="String" />
-
-        <variable
-            name="sadness"
-            type="String" />
-
-        <variable
-            name="anger"
-            type="String" />
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <SurfaceView
+        android:id="@+id/surface"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" />
 
-        <SurfaceView
-            android:id="@+id/surface"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/start"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:context=".MainActivity">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:background="@color/colorPrimary"
-            android:orientation="vertical"
-            android:padding="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/start"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:context=".MainActivity">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="@{leftEye}"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp"
-                tools:text="left eye" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="@{rightEye}"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp"
-                tools:text="right eye" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="@{mouth}"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp"
-                tools:text="mouth" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="@{neutral}"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp"
-                tools:text="neutral" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="@{happiness}"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp"
-                tools:text="happiness" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="@{surprise}"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp"
-                tools:text="surprise" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="@{sadness}"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp"
-                tools:text="sadness" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="@{anger}"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp"
-                tools:text="anger" />
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/start"
+        <TextView
+            android:id="@+id/leftEyeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="24dp"
-            android:text="@string/start_detecting"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_margin="10dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            tools:text="left eye" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+        <TextView
+            android:id="@+id/rightEyeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            tools:text="right eye" />
+
+        <TextView
+            android:id="@+id/mouthTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            tools:text="mouth" />
+
+        <TextView
+            android:id="@+id/neutralTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            tools:text="neutral" />
+
+        <TextView
+            android:id="@+id/happinessTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            tools:text="happiness" />
+
+        <TextView
+            android:id="@+id/surpriseTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            tools:text="surprise" />
+
+        <TextView
+            android:id="@+id/sadnessTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            tools:text="sadness" />
+
+        <TextView
+            android:id="@+id/angerTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            tools:text="anger" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:text="@string/start_detecting"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

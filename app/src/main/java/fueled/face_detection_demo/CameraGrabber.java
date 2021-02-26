@@ -32,6 +32,7 @@ public class CameraGrabber
     private static final int NUMBER_OF_BUFFERS=2;
 
     private static int currentCameraDevice = Camera.CameraInfo.CAMERA_FACING_FRONT;
+    public static android.view.SurfaceHolder cameraSurfaceView;
 
     private int width = 640;
     private int height = 480;
@@ -42,8 +43,9 @@ public class CameraGrabber
     public CameraGrabber() {
     }
 
-    public CameraGrabber(int cameraDevice) {
+    public CameraGrabber(int cameraDevice, android.view.SurfaceHolder surfaceView) {
         CameraGrabber.currentCameraDevice = cameraDevice;
+        cameraSurfaceView = surfaceView;
     }
 
     public void setFrameReceiver(DeepAR receiver) {
@@ -138,7 +140,7 @@ public class CameraGrabber
     private static class CameraHandlerThread extends HandlerThread {
         Handler mHandler = null;
         public Camera camera;
-        public SurfaceTexture surface;
+        //public SurfaceTexture surface;
         private DeepAR frameReceiver;
         private ByteBuffer[] buffers;
         private int currentBuffer = 0;
@@ -176,7 +178,7 @@ public class CameraGrabber
                     mHandler = null;
                     listener = null;
                     frameReceiver = null;
-                    surface = null;
+                    cameraSurfaceView = null;
                     buffers = null;
                     quitSafely();
                 }
@@ -219,9 +221,9 @@ public class CameraGrabber
                 camera = null;
             }
 
-            if (surface == null) {
-                surface = new SurfaceTexture(0);
-            }
+//            if (cameraSurfaceView == null) {
+//                surface = new SurfaceTexture(0);
+//            }
 
             Camera.CameraInfo info = new Camera.CameraInfo();
             int cameraId = -1;
@@ -311,8 +313,9 @@ public class CameraGrabber
 
 
             try {
-                camera.setPreviewTexture(surface);
-            } catch(IOException ioe)  {
+                camera.setPreviewDisplay(cameraSurfaceView);
+                camera.setDisplayOrientation(90);
+            } catch(Exception ioe)  {
                 if (listener != null) {
                     listener.onCameraError("Error setting preview texture.");
                 }

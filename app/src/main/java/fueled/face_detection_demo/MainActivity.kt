@@ -21,13 +21,14 @@ import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.SurfaceHolder.Callback
 import android.view.SurfaceView
-import android.view.View
+
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import fueled.face_detection_demo.CameraGrabber.cameraSurfaceView
 import fueled.face_detection_demo.R.layout
-import fueled.face_detection_demo.databinding.ActivityMainBinding
 
 import kotlin.math.min
 import kotlin.math.sqrt
@@ -45,12 +46,9 @@ class MainActivity : AppCompatActivity(), Callback, AREventListener {
     private var faceData: FaceData? = null
 
 
-    private val binding: ActivityMainBinding by BindActivity(layout.activity_main)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
+        setContentView(R.layout.activity_main)
         if (ContextCompat.checkSelfPermission(this, permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(permission.CAMERA, permission.WRITE_EXTERNAL_STORAGE, permission.RECORD_AUDIO),
                 1)
@@ -61,13 +59,8 @@ class MainActivity : AppCompatActivity(), Callback, AREventListener {
 
     }
 
-    override fun onStart() {
-        super.onStart()
-        setupCamera()
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == 1 && grantResults.size > 0) {
+        if (requestCode == 1 && grantResults.isNotEmpty()) {
             for (grantResult in grantResults) {
                 if (grantResult != PackageManager.PERMISSION_GRANTED) {
                     return  // no permission
@@ -79,8 +72,8 @@ class MainActivity : AppCompatActivity(), Callback, AREventListener {
 
     private fun initialize() {
         setContentView(layout.activity_main)
-        initializeDeepAR()
         initializeViews()
+        initializeDeepAR()
     }
 
     private fun initializeViews() {
@@ -88,12 +81,12 @@ class MainActivity : AppCompatActivity(), Callback, AREventListener {
         val startBtn = findViewById<Button>(R.id.start)
         arView.holder.addCallback(this)
 
-        // Surface might already be initialized, so we force the call to onSurfaceChanged
-        arView.visibility = View.GONE
-        arView.visibility = View.VISIBLE
+//        // Surface might already be initialized, so we force the call to onSurfaceChanged
+//        arView.visibility = View.GONE
+//        arView.visibility = View.VISIBLE
 
         startBtn.setOnClickListener {
-            deepAR!!.switchEffect("effect", "file:///android_asset/fire")
+            deepAR!!.setVisionOnly()
         }
     }
 
@@ -139,7 +132,6 @@ class MainActivity : AppCompatActivity(), Callback, AREventListener {
         deepAR = DeepAR(this)
         deepAR!!.setLicenseKey("02b3c2a499a5a773f59b4b7a0eb2f4e03ba90eadf905e1eb94ca42e681e75ef3d8de176ba1e311dd")
         deepAR!!.initialize(this, this)
-        setupCamera()
 
         deepAR!!.faceTrackedCallback = FaceTrackedCallback { faces ->
             faceData = faces[0]
@@ -254,26 +246,38 @@ class MainActivity : AppCompatActivity(), Callback, AREventListener {
 
             val mouthHeight = (mouth1 + mouth2 + mouth3) / 3
 
-            Log.e("mouthHeight", "$mouthHeight ${Thread.currentThread()}")
+            Log.e("mouthHeight", "$mouthHeight")
+            // subject.onNext(emotions[FaceData.EMOTION_IDX_NEUTRAL])
 
             runOnUiThread {
-                binding.apply {
-                    leftEye = "Left Eye: ${if (leftEyeAspectRatio > EYE_AR_THRESH) "open" else "closed"}"
-                    rightEye = "Right Eye: ${if (rightEyeAspectRatio > EYE_AR_THRESH) "open" else "closed"}"
-                    mouth = "Mouth: ${if (mouthHeight > min(topLipHeight, bottomLipHeight) * MOUTH_RATIO) "open" else "closed"}"
-                    neutral = "Neutral: ${emotions[FaceData.EMOTION_IDX_NEUTRAL]}"
-                    happiness = "Happiness: ${emotions[FaceData.EMOTION_IDX_HAPPINESS]}"
-                    sadness = "Sadness: ${emotions[FaceData.EMOTION_IDX_SADNESS]}"
-                    surprise = "Surprise: ${emotions[FaceData.EMOTION_IDX_SURPRISE]}"
-                    anger = "Anger: ${emotions[FaceData.EMOTION_IDX_ANGER]}"
-                }
+                "Left Eye: ${if (leftEyeAspectRatio > EYE_AR_THRESH) "open" else "closed"}"
+                    .also { findViewById<TextView>(R.id.leftEyeTextView).text = it }
+                "Right Eye: ${if (rightEyeAspectRatio > EYE_AR_THRESH) "open" else "closed"}"
+                    .also { findViewById<TextView>(R.id.rightEyeTextView).text = it }
+                "Mouth: ${if (mouthHeight > min(topLipHeight, bottomLipHeight) * MOUTH_RATIO) "open" else "closed"}"
+                    .also { findViewById<TextView>(R.id.mouthTextView).text = it }
+
+                "Neutral: ${emotions[FaceData.EMOTION_IDX_NEUTRAL]}"
+                    .also { findViewById<TextView>(R.id.neutralTextView).text = it }
+
+                "Happiness: ${emotions[FaceData.EMOTION_IDX_HAPPINESS]}"
+                    .also { findViewById<TextView>(R.id.happinessTextView).text = it }
+
+                "Sadness: ${emotions[FaceData.EMOTION_IDX_SADNESS]}"
+                    .also { findViewById<TextView>(R.id.sadnessTextView).text = it }
+
+                "Surprise: ${emotions[FaceData.EMOTION_IDX_SURPRISE]}"
+                    .also { findViewById<TextView>(R.id.surpriseTextView).text = it }
+
+                "Anger: ${emotions[FaceData.EMOTION_IDX_ANGER]}"
+                    .also { findViewById<TextView>(R.id.angerTextView).text = it }
             }
         }
     }
 
-    private fun setupCamera() {
+    private fun setupCamera(surface: SurfaceHolder) {
         val defaultCameraDevice = CameraInfo.CAMERA_FACING_FRONT
-        cameraGrabber = CameraGrabber(defaultCameraDevice)
+        cameraGrabber = CameraGrabber(defaultCameraDevice, surface)
         val screenOrientation = screenOrientation
         when (screenOrientation) {
             ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE -> cameraGrabber!!.screenOrientation = 90
@@ -323,17 +327,18 @@ class MainActivity : AppCompatActivity(), Callback, AREventListener {
         deepAR = null
     }
 
-    override fun surfaceCreated(holder: SurfaceHolder?) {}
+    override fun surfaceCreated(holder: SurfaceHolder?) {
+        Log.e("surfaceCreated", "surfaceCreated")
+        if (holder != null)
+            setupCamera(holder)
+    }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        // If we are using on screen rendering we have to set surface view where DeepAR will render
-        deepAR!!.setRenderSurface(holder.surface, width, height)
+        cameraSurfaceView = holder
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
-        if (deepAR != null) {
-            deepAR!!.setRenderSurface(null, 0, 0)
-        }
+        cameraSurfaceView = null
     }
 
     override fun screenshotTaken(bitmap: Bitmap) {}
